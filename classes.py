@@ -143,6 +143,7 @@ class TrelloDesk:
         create new Column
         """
         created = False
+        new_column_id = None
         board_id = self.desk_dict.get(desk_name)
         if board_id:
             url = "{}/{}/{}/{}".format(base_url, 'boards', board_id, 'lists')
@@ -156,7 +157,8 @@ class TrelloDesk:
                 key = (desk_name, column_name)
                 self.columns[key] = new_col.get('id')
                 created = True
-        return created
+                new_column_id = new_col.get('id')
+        return created, new_column_id
 
     def create_card(self, desk_name, column_name, card_name, **kwargs):
         """
@@ -165,6 +167,8 @@ class TrelloDesk:
         created = False
         board_id = self.desk_dict.get(desk_name)
         column_id = self.columns.get((desk_name, column_name))
+        if not column_id:
+            ok, column_id = self.create_column(desk_name, column_name)
         if board_id and column_id:
             url = "{}/{}/".format(base_url, 'cards')
             params = {'idList': column_id, 'name': card_name, }
