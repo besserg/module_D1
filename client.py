@@ -39,7 +39,7 @@ def create_column():
     board_name = input('Input created Board name:')
     column_name = input('Input new Column name:')
     if board_name and column_name:
-        res = td.create_column(desk_name=board_name, column_name=column_name)
+        res, cid = td.create_column(desk_name=board_name, column_name=column_name)
         if res:
             print(f"Column {column_name} created succefully on Board '{board_name}'")
         else:
