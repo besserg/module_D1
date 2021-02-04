@@ -3,6 +3,9 @@ import json
 from settings import api_key, api_token, base_url
 
 class TrelloDesk:
+    """
+    class for using Trello REST API
+    """
     def __init__(self, username):
 
         self.columns = {}
@@ -13,6 +16,9 @@ class TrelloDesk:
         self.get_all()
 
     def api_responce(self, url, rtype="GET", add_query=None):
+        """ 
+        run commad to API
+        """
         headers = {"Accept": "application/json"}
         query = {
             'key': api_key,
@@ -40,6 +46,9 @@ class TrelloDesk:
         self.get_cards()
 
     def get_desks(self):
+        """
+        get info about Boards
+        """
         url = "{}/{}/{}/{}".format(base_url, 'members', self.username, 'boards')
         responce = self.api_responce(url)
         sc = responce.status_code
@@ -49,6 +58,9 @@ class TrelloDesk:
                 self.desk_dict[desk.get('name')] = desk.get('id')
 
     def get_columns(self, desk_name=None, need_upd=False):
+        """
+        get info about Columns
+        """
         result_columns = {}
         if desk_name:
             desk_id = self.desk_dict[desk_name]
@@ -75,6 +87,9 @@ class TrelloDesk:
         return result_columns
 
     def get_cards(self, desk_name=None, column_name=None, need_upd=False):
+        """
+        get info about Cards
+        """
         result_cards = {}
         if desk_name and column_name:
             try:
@@ -107,6 +122,9 @@ class TrelloDesk:
         return result_cards
 
     def create_desk(self, name, **kwargs):
+        """
+        create new Board
+        """        
         created = False
         url = "{}/{}/".format(base_url, 'boards')
         params = {'name': name}
@@ -121,6 +139,9 @@ class TrelloDesk:
         return created
 
     def create_column(self, desk_name, column_name, **kwargs):
+        """
+        create new Column
+        """
         created = False
         board_id = self.desk_dict.get(desk_name)
         if board_id:
@@ -138,6 +159,9 @@ class TrelloDesk:
         return created
 
     def create_card(self, desk_name, column_name, card_name, **kwargs):
+        """
+        create new Card
+        """
         created = False
         board_id = self.desk_dict.get(desk_name)
         column_id = self.columns.get((desk_name, column_name))
@@ -156,6 +180,9 @@ class TrelloDesk:
         return created
 
     def update_item(self, item_id, item, **kwargs):
+        """
+        update any Item from Trello
+        """
         result = False
         result_txt = ''
         if kwargs:
